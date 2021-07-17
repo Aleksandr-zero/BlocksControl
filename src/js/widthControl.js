@@ -1,0 +1,13 @@
+
+
+class WidthControl {
+    /**
+
+    */
+
+	constructor() {
+
+	}
+};
+
+
