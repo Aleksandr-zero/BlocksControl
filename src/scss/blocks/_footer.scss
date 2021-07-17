@@ -1,0 +1,28 @@
+.footer {
+	padding: 20px 0;
+
+	&__content {
+
+		&-items {
+			display: flex;
+			justify-content: center;
+		}
+
+		&-item {
+
+			&-link {
+
+				svg {
+					transition: fill $animate;
+				}
+
+				&:hover {
+
+					svg {
+						fill: $primary-color-1;
+					}
+				}
+			}
+		}
+	}
+}

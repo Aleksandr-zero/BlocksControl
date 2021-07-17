@@ -1,0 +1,41 @@
+.example {
+	margin-top: 60px;
+	margin-bottom: 30px;
+
+	margin: 600px 0;
+
+	&__content {
+
+		&-items {
+
+		}
+
+		&-item {
+
+			.width-control-container {
+				display: flex;
+				justify-content: space-between;
+				margin-top: 24px;
+
+				color: transparent;
+				font-size: 0;
+
+				.width-control-block-1,
+				.width-control-block-2 {
+					height: 250px;
+					border-radius: 10px;
+				}
+
+				.width-control-block-1 {
+					background-color: $primary-color-1;
+					width: 300px;
+				}
+
+				.width-control-block-2 {
+					background-color: $secondary-color-1;
+					width: 600px;
+				}
+			}
+		}
+	}
+}

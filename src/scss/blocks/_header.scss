@@ -1,0 +1,36 @@
+.header {
+	padding: 20px 0;
+
+	&__content {
+		display: flex;
+		justify-content: center;
+
+		&-title {
+			position: relative;
+
+			&::before,
+			&::after {
+				position: absolute;
+				content: "";
+			}
+
+			&::before {
+				width: 196px;
+				height: 3px;
+				background-color: $primary-color-1;
+				bottom: -13px;
+				left: -20px;
+				border-radius: 12px;
+			}
+
+			&::after {
+				width: 16px;
+				height: 16px;
+				background-color: $primary-color-1;
+				bottom: -19px;
+				left: 50%;
+				transform: translateX(-50%) rotate(45deg);
+			}
+		}
+	}
+}
