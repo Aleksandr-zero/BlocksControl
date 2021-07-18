@@ -24,10 +24,8 @@ Connection JS:
 </div>
 ```
 
-**<span style="border-bottom: 1px solid #000000;">
-Blocks are basically containers should contain a line in the class: `width-control-block`;<br>
-Must be numbered: Must be numbered `-<int>`!
-</span>**
+**Blocks are basically containers should contain a line in the class: `width-control-block`;<br>
+Must be numbered: Must be numbered `-<int>`!**
 
 
 ```js
