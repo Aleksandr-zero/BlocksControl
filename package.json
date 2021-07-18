@@ -1,7 +1,7 @@
 {
-  "name": "width-control",
+  "name": "blocks-control",
   "version": "1.0.0",
-  "description": "Controlling the width of elements when changing the screen",
+  "description": "Controlling the width, height and other of elements when changing the screen",
   "main": "gulpfile.js",
   "scripts": {
     "dev": "gulp serve",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Aleksandr-zero/WidthControl.git"
+    "url": "git+https://github.com/Aleksandr-zero/BlocksControl.git"
   },
   "author": "Aleksandr Silkin",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Aleksandr-zero/WidthControl/issues"
+    "url": "https://github.com/Aleksandr-zero/BlocksControl/issues"
   },
-  "homepage": "https://github.com/Aleksandr-zero/WidthControl#readme",
+  "homepage": "https://github.com/Aleksandr-zero/BlocksControl#readme",
   "devDependencies": {
     "@babel/core": "^7.14.6",
     "@babel/preset-env": "^7.14.7",

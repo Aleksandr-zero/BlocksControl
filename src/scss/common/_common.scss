@@ -18,10 +18,10 @@ body {
 	&::after {
 		position: absolute;
 		content: "";
-		width: 4px;
-		height: 140px;
+		width: 6px;
+		height: 180px;
 		background-color: $secondary-color-1;
-		top: 70px;
+		bottom: -212px;
 		left: 50%;
 		transform: translateX(-50%);
 		border-bottom-right-radius: 12px;
@@ -38,21 +38,21 @@ body {
 		&::after {
 			position: absolute;
 			content: "";
-			width: 4px;
-			height: 50px;
+			width: 5px;
+			height: 65px;
 			background-color: $secondary-color-1;
-			top: 156px;
+			bottom: -210px;
 		}
 
 		&::before {
 			left: 50%;
-			transform: rotate(-30deg) translateX(-16px);
+			transform: rotate(-30deg) translateX(-22px);
 			border-bottom-left-radius: 4px;
 		}
 
 		&::after {
 			right: 50%;
-			transform: rotate(30deg) translateX(16px);
+			transform: rotate(30deg) translateX(22px);
 			border-bottom-right-radius: 4px;
 		}
 	}

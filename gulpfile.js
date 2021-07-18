@@ -18,12 +18,12 @@ const html = () => {
 
 
 const scriptsDev = () => {
-    return src("./src/js/widthControl.js")
+    return src("./src/js/blocksControl.js")
         .pipe(dest("./app/js"))
 };
 
 const scriptsBuild = () => {
-    return src("./src/js/widthControl.js")
+    return src("./src/js/blocksControl.js")
         .pipe(babel({
             presets: ['@babel/preset-env']
         }))
@@ -34,14 +34,14 @@ const scriptsBuild = () => {
 };
 
 const scriptsBuildDist = () => {
-    return src("./src/js/widthControl.js")
+    return src("./src/js/blocksControl.js")
         .pipe(babel({
             presets: ['@babel/preset-env']
         }))
         .pipe(uglify({
             keep_fnames: true
         }))
-        .pipe(dest("./WidthControl"));
+        .pipe(dest("./BlocksControl"));
 }
 
 
@@ -74,7 +74,7 @@ const clear = () => {
 };
 
 const clearScripts = () => {
-    return del("./WidthControl");
+    return del("./BlocksControl");
 };
 
 
@@ -84,7 +84,7 @@ const serve = () => {
     });
 
     watch('./src/index.html',			series(html)).on('change', sync.reload);
-    watch("./src/js/widthControl.js",	series(scriptsDev)).on('change', sync.reload);
+    watch("./src/js/blocksControl.js",	series(scriptsDev)).on('change', sync.reload);
     watch('./src/scss/**/*.scss',		series(scssDev)).on('change', sync.reload);
 };
 
