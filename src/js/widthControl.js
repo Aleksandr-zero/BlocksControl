@@ -1,7 +1,7 @@
 class WidthControl {
     /**
 	* @param container -> block "width-control-container" ( type -> HTMLElement )
-	* @param options -> custom settings ( type -> Object )
+	* @param options -> settings for blocks ( type -> Object )
     */
 
 	constructor(container, options) {
@@ -17,6 +17,8 @@ class WidthControl {
 		this.complementsOptions_Blocks();
 		this.calculatesFinalBlockWidth();
 		this.calculatesNumber_For_ScrollingWindow_Block_OutOfSight();
+
+		this.sequenceNumbersBlocks = Object.keys(this.blocks);
 	}
 
 	complementsOptions_Blocks() {
@@ -48,29 +50,31 @@ class WidthControl {
 	checks_If_BlcokVisible(positionWindow) {
 		/* Проверяет находится ли блок в зоне видимости.  */
 
-		if ( positionWindow.top - this.blocks[1].block.clientHeight <= this.blocks[1].position.top &&
-			this.blocks[1].position.top < positionWindow.bottom ) {
+		this.sequenceNumbersBlocks.forEach((serialNumber) => {
+			if ( positionWindow.top - this.blocks[serialNumber].block.clientHeight <= this.blocks[serialNumber].position.top &&
+				this.blocks[serialNumber].position.top < positionWindow.bottom ) {
 
-			this.calculatesWindowScrolling();
+				this.calculatesWindowScrolling(serialNumber);
 
-			if (this.blocks[1].isVisible) {
-				return;
+				if (this.blocks[serialNumber].isVisible) {
+					return;
+				};
+
+				this.blocks[serialNumber].isVisible = true;
+
+			} else if ( this.blocks[serialNumber].isVisible ) {
+				this.blocks[serialNumber].isVisible = false;
 			};
-
-			this.blocks[1].isVisible = true;
-
-		} else if ( this.blocks[1].isVisible ) {
-			this.blocks[1].isVisible = false;
-		};
+		});
 	}
 
 	// Вспомогательные
-	calculatesWindowScrolling() {
+	calculatesWindowScrolling(serialNumber) {
 		/* Рассчитывает на сколько процентов проскролено окно при видимости из одного блока.  */
 
-		const percentWindowScrolling = (window.innerHeight - this.blocks[1].block.getBoundingClientRect().top) / this.blocks[1].percentScrollWindow;
+		const percentWindowScrolling = (window.innerHeight - this.blocks[serialNumber].block.getBoundingClientRect().top) / this.blocks[1].percentScrollWindow;
 
-		this.changeBlock(percentWindowScrolling);
+		this.changeBlock(serialNumber, percentWindowScrolling);
 	}
 
 
@@ -117,7 +121,7 @@ class WidthControl {
 	}
 
 	calculatesFinalBlockWidth() {
-		/* Выщитывает конечную ширину блока при изменение и начальную.  */
+		/* Выщитывает начальную ширину и конечную ширину блока при изменение.  */
 
 		const sequenceNumbersBlocks = Object.keys(this.blocks);
 
@@ -157,23 +161,23 @@ class WidthControl {
 
 
 	// Функционал
-	changeBlock(percentWindowScrolling) {
+	changeBlock(serialNumber, percentWindowScrolling) {
 		/* Производит действие над элементом при изменение экрана.  */
 
-		const numberForChangeWidth = percentWindowScrolling * ((this.blocks[1].finalWidth - this.blocks[1].initialWidth) / 100);
-		let newWidth = this.blocks[1].initialWidth;
+		const numberForChangeWidth = Math.abs(percentWindowScrolling * ((this.blocks[serialNumber].finalWidth - this.blocks[serialNumber].initialWidth) / 100));
+		let newWidth = this.blocks[serialNumber].initialWidth;
 
-		if ( this.blocks[1].effect === "enlarge" ) {
+		if ( this.blocks[serialNumber].effect === "enlarge" ) {
 			newWidth += numberForChangeWidth;
-		} else if ( this.blocks[1].effect === "reduce" ) {
+		} else if ( this.blocks[serialNumber].effect === "reduce" ) {
 			newWidth -= numberForChangeWidth;
 		};
 
-		this.setsNewWidthForBlock(newWidth);
+		this.setsNewWidthForBlock(serialNumber, newWidth);
 	}
 
-	setsNewWidthForBlock(newWidth) {
-		this.blocks[1].block.style.width = `${newWidth}px`;
+	setsNewWidthForBlock(serialNumber, newWidth) {
+		this.blocks[serialNumber].block.style.width = `${newWidth}px`;
 	}
 
 
@@ -183,5 +187,33 @@ class WidthControl {
 };
 
 
-const blockContainer = document.querySelector(".width-control-container");
+const blockContainer_1 = document.querySelector(".width-control-container-1");
+const newWidthControl_1 = new WidthControl(blockContainer_1, {
+	1: {
+		effect: "enlarge",
+		percent: 45
+	},
+	2: {
+		effect: "reduce",
+		percent: 25
+	}
+});
+newWidthControl_1.run();
 
+
+const blockContainer_2 = document.querySelector(".width-control-container-2");
+const newWidthControl_2 = new WidthControl(blockContainer_2, {
+	1: {
+		effect: "enlarge",
+		percent: 45
+	},
+	2: {
+		effect: "reduce",
+		percent: 70
+	},
+	3: {
+		effect: "enlarge",
+		percent: 40
+	}
+});
+newWidthControl_2.run();
