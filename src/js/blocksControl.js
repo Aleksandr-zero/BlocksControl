@@ -9,26 +9,24 @@ class WidthControl {
 		this.options = options;
 
 		this.blocks = {};
-		this.percentHeightWindow = window.innerHeight / 100;
 
 		this.findsBlocks_In_Container();
+		this.sequenceNumbersBlocks = Object.keys(this.blocks);
+
 		this.calculatesPositionBlocks_Window();
 
 		this.complementsOptions_Blocks();
+		this.addPercentScrolledPartOfPage();
 		this.calculatesFinalBlockWidth();
 		this.calculatesFinalBlockHeight();
 		this.calculatesNumber_For_ScrollingWindow_Block_OutOfSight();
-
-		this.sequenceNumbersBlocks = Object.keys(this.blocks);
 	}
 
 	complementsOptions_Blocks() {
-		/* Дополняет настройки для свойства <blocks>.  */
+		/* Дополняет настройки для обьекта <blocks>.  */
 
-		const sequenceNumbersBlocks = Object.keys(this.options);
-
-		sequenceNumbersBlocks.forEach((number) => {
-			for (const key in this.options[number]) {
+		this.sequenceNumbersBlocks.forEach((number) => {
+			for ( const key in this.options[number] ) {
 				this.blocks[number][key] = this.options[number][key]
 			};
 		});
@@ -39,12 +37,10 @@ class WidthControl {
 		/* Навешивает событие скролла для экрана.  */
 
 		window.addEventListener("scroll", () => {
-			const positionWindow = {
+			this.checks_If_BlcokVisible({
 				top: window.pageYOffset,
 				bottom: window.pageYOffset + document.documentElement.clientHeight
-			};
-
-			this.checks_If_BlcokVisible(positionWindow);
+			});
 		});
 	}
 
@@ -75,7 +71,45 @@ class WidthControl {
 
 		const percentWindowScrolling = (window.innerHeight - this.blocks[serialNumber].block.getBoundingClientRect().top) / this.blocks[1].percentScrollWindow;
 
+		// Отложенный запуск
+		if ( this.blocks[serialNumber].delayedLaunch && this.blocks[serialNumber].delayedLaunch[0] ) {
+			if ( percentWindowScrolling < this.blocks[serialNumber].delayedLaunch[1] ) {
+				return
+			};
+		};
+
+		this.setsPercentScrolledPartOfPage(serialNumber, percentWindowScrolling, [false]);
 		this.changeBlock(serialNumber, percentWindowScrolling);
+	}
+
+	setsPercentScrolledPartOfPage(serialNumber, percentWindowScrolling, isDelayedLaunch) {
+		if ( percentWindowScrolling >= 100 ) {
+			return;
+		};
+
+		if ( isDelayedLaunch[0] ) {
+			this.blocks[serialNumber].scrolledPartOfPage += isDelayedLaunch[1];
+			this.blocks[serialNumber].scrolledPartOfPage_For_DelayedLaunch = percentWindowScrolling;
+
+			return;
+		};
+
+		if ( !this.blocks[serialNumber].delayedLaunch && !isDelayedLaunch[0] ) {
+			this.blocks[serialNumber].scrolledPartOfPage = percentWindowScrolling;
+		};
+	}
+
+	checks_If_PercentageNeedsChanged(serialNumber, percentWindowScrolling, percentDelayedLaunch) {
+		/* Проверяет нужно ли изменить процент (нужно для отложеннного запуска).  */
+
+		this.blocks[serialNumber].aaa = percentWindowScrolling - percentDelayedLaunch;
+
+		if ( this.blocks[serialNumber].delayedLaunchNumber !== Math.floor(percentWindowScrolling / (100 / percentDelayedLaunch)) ) {
+			this.blocks[serialNumber].delayedLaunchNumber = Math.floor(percentWindowScrolling / (100 / percentDelayedLaunch));
+			return 1;
+		} else {
+			return 0
+		};
 	}
 
 
@@ -86,7 +120,7 @@ class WidthControl {
 		const blocks = this.container.children;
 
 		Array.prototype.forEach.call(blocks, (block) => {
-			for (let index = 0; index < block.classList.length; index++) {
+			for ( let index = 0; index < block.classList.length; index++ ) {
 				if ( block.classList[index].includes("blocks-control-block") ) {
 					const splitText = block.classList[index].split("-");
 					const serialNumber = splitText[splitText.length - 1];
@@ -101,6 +135,12 @@ class WidthControl {
 		});
 	}
 
+	addPercentScrolledPartOfPage() {
+		this.sequenceNumbersBlocks.forEach((number) => {
+			this.blocks[number].scrolledPartOfPage = 0;
+		});
+	}
+
 	addProperty_IsVisible_Block(serialNumber) {
 		/* Добавление свойства <isVisible> ( для проверки видимости блока на экране ).  */
 		this.blocks[serialNumber].isVisible = false;
@@ -109,25 +149,21 @@ class WidthControl {
 	calculatesPositionBlocks_Window() {
 		/* Выщитывает кординты блоков.  */
 
-		const sequenceNumbersBlocks = Object.keys(this.blocks);
-
-		sequenceNumbersBlocks.forEach((number) => {
+		this.sequenceNumbersBlocks.forEach((serialNumber) => {
 			const positionBlock = {
-				top: Math.round(window.pageYOffset + this.blocks[number].block.getBoundingClientRect().top),
-				bottom: Math.round(window.pageXOffset + this.blocks[number].block.getBoundingClientRect().bottom)
+				top: Math.round(window.pageYOffset + this.blocks[serialNumber].block.getBoundingClientRect().top),
+				bottom: Math.round(window.pageXOffset + this.blocks[serialNumber].block.getBoundingClientRect().bottom)
 			};
 
-			this.blocks[number].position = positionBlock;
+			this.blocks[serialNumber].position = positionBlock;
 		});
 	}
 
 	calculatesFinalBlockWidth() {
 		/* Выщитывает начальную ширину и конечную ширину блока при изменение.  */
 
-		const sequenceNumbersBlocks = Object.keys(this.blocks);
-
-		for (let number = 0; number < sequenceNumbersBlocks.length; number++) {
-			const sequenceNumber = sequenceNumbersBlocks[number];
+		for (let serialNumber = 0; serialNumber < this.sequenceNumbersBlocks.length; serialNumber++) {
+			const sequenceNumber = this.sequenceNumbersBlocks[serialNumber];
 
 			if ( this.blocks[sequenceNumber].actionProperty !== "width" ) {
 				continue;
@@ -152,10 +188,8 @@ class WidthControl {
 	calculatesFinalBlockHeight() {
 		/* Выщитывает начальную высоту и конечную высоту блока при изменение.  */
 
-		const sequenceNumbersBlocks = Object.keys(this.blocks);
-
-		for (let number = 0; number < sequenceNumbersBlocks.length; number++) {
-			const sequenceNumber = sequenceNumbersBlocks[number];
+		for (let serialNumber = 0; serialNumber < this.sequenceNumbersBlocks.length; serialNumber++) {
+			const sequenceNumber = this.sequenceNumbersBlocks[serialNumber];
 
 			if ( this.blocks[sequenceNumber].actionProperty !== "height" ) {
 				continue;
@@ -183,14 +217,11 @@ class WidthControl {
 		прокрутки этого числа вышел из зоны видимости.
 		*/
 
-		const sequenceNumbersBlocks = Object.keys(this.blocks);
-
-		sequenceNumbersBlocks.forEach((number) => {
-			const numberToScrollWindow = window.innerHeight + this.blocks[number].block.getBoundingClientRect().height;
+		this.sequenceNumbersBlocks.forEach((serialNumber) => {
+			const numberToScrollWindow = window.innerHeight + this.blocks[serialNumber].block.getBoundingClientRect().height;
 			const percentScrollWindow = numberToScrollWindow / 100;
 
-			this.blocks[number].numberToScrollWindow = numberToScrollWindow;
-			this.blocks[number].percentScrollWindow = percentScrollWindow;
+			this.blocks[serialNumber].percentScrollWindow = percentScrollWindow;
 		});
 	}
 
@@ -199,8 +230,22 @@ class WidthControl {
 	changeBlock(serialNumber, percentWindowScrolling) {
 		/* Производит действие над элементом при изменение экрана.  */
 
+		let _percentWindowScrolling = this.blocks[serialNumber].scrolledPartOfPage;
+
+		// Отложенный запуск.
+		if ( this.blocks[serialNumber].delayedLaunch && this.blocks[serialNumber].delayedLaunch[0] ) {
+			_percentWindowScrolling = this.blocks[serialNumber].scrolledPartOfPage_For_DelayedLaunch - this.blocks[serialNumber].delayedLaunch[1];
+			_percentWindowScrolling += this.checks_If_PercentageNeedsChanged(
+						serialNumber,
+						_percentWindowScrolling,
+						this.blocks[serialNumber].delayedLaunch[1]
+					);
+
+			this.setsPercentScrolledPartOfPage(serialNumber, percentWindowScrolling, [true, _percentWindowScrolling]);
+		};
+
 		if ( this.blocks[serialNumber].actionProperty === "width" ) {
-			const numberForChangeWidth = Math.abs(percentWindowScrolling * ((this.blocks[serialNumber].finalWidth - this.blocks[serialNumber].initialWidth) / 100));
+			const numberForChangeWidth = Math.abs(_percentWindowScrolling * ((this.blocks[serialNumber].finalWidth - this.blocks[serialNumber].initialWidth) / 100));
 			let newWidth = this.blocks[serialNumber].initialWidth;
 
 			if ( this.blocks[serialNumber].action === "enlarge" ) {
@@ -212,7 +257,7 @@ class WidthControl {
 			this.setsNewWidthForBlock(serialNumber, newWidth);
 
 		} else if ( this.blocks[serialNumber].actionProperty === "height" ) {
-			const numberForChangeWidth = Math.abs(percentWindowScrolling * ((this.blocks[serialNumber].finalHeight - this.blocks[serialNumber].initialHeight) / 100));
+			const numberForChangeWidth = Math.abs(_percentWindowScrolling * ((this.blocks[serialNumber].finalHeight - this.blocks[serialNumber].initialHeight) / 100));
 			let newHeight = this.blocks[serialNumber].initialHeight;
 
 			if ( this.blocks[serialNumber].action === "enlarge" ) {
@@ -297,3 +342,20 @@ const newWidthControl_3 = new WidthControl(blockContainer_3, {
 	}
 });
 newWidthControl_3.run();
+
+
+const blockContainer_4 = document.querySelector(".blocks-control-container-4");
+const newWidthControl_4 = new WidthControl(blockContainer_4, {
+	1: {
+		action: "enlarge",
+		actionProperty: "height",
+		percent: 45,
+	},
+	2: {
+		action: "reduce",
+		actionProperty: "width",
+		percent: 25,
+		delayedLaunch: [true, 30]
+	}
+});
+newWidthControl_4.run();

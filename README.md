@@ -10,7 +10,7 @@ Connection JS:
 ```xml
 <script src="https://aleksandr-zero.github.io/BlocksControl/BlocksControl/blocksControl.js"></script>
 ```
-Size script: `4,88 KB`
+Size script: `6,02 KB`
 
 ```xml
 <!-- Main container -->
@@ -51,9 +51,12 @@ const newWidthControl = new WidthControl(blockContainer, {
 | Parameter  		  | Description                  | Type |
 |-----------------|------------------------------|------|
 | `int` | The serial number of the block, for setting the settings | `int` |
-| `<int>.action` | What action to perform on this element. **Parameter**: `(reduce \ enlarge)`.<br>**Parameter value**: *1)* `reduce` - reduce in width; *2)* `enlarge` - Expand in width. | `str` |
+| `<int>.action` | What action to perform on this element. **Parameter**: `(reduce \ enlarge)`.<br>**Parameter value**: *1)* `reduce` - reduce in block; *2)* `enlarge` - Expand in block. | `str` |
 | `<int>.actionProperty` | Which property to choose to change. **Parameter**: `(width \ height)` | `str` |
 | `<int>.percent` | Shows by what percentage to increase or decrease the block (calculates from the entire block length) | `int` | 
+| `<int>.delayedLaunch` | Delayed start occurs after the percentage is reached | `array` |
+| `<int>.delayedLaunch[0]` | The first parameter indicates to enable delayed start | `boolean` |
+| `<int>.delayedLaunch[1]` | The second parameter indicates the percentage of the scrolled window (calculated by the height of the screen) | `int` |
 
 
 ```js
@@ -66,7 +69,8 @@ new WidthControl(..., {
   2: {
     action: "reduce",
     actionProperty: "height",
-    percent: 25
+    percent: 25,
+    delayedLaunch: [true, 20]
   }
 })
 ```
