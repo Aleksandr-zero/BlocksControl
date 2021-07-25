@@ -88,9 +88,7 @@ class WidthControl {
 		};
 
 		if ( isDelayedLaunch[0] ) {
-			this.blocks[serialNumber].scrolledPartOfPage += isDelayedLaunch[1];
-			this.blocks[serialNumber].scrolledPartOfPage_For_DelayedLaunch = percentWindowScrolling;
-
+			this.blocks[serialNumber].scrolledPartOfPage_For_DelayedLaunch = percentWindowScrolling - this.blocks[serialNumber].delayedLaunch[1];
 			return;
 		};
 
@@ -102,13 +100,8 @@ class WidthControl {
 	checks_If_PercentageNeedsChanged(serialNumber, percentWindowScrolling, percentDelayedLaunch) {
 		/* Проверяет нужно ли изменить процент (нужно для отложеннного запуска).  */
 
-		this.blocks[serialNumber].aaa = percentWindowScrolling - percentDelayedLaunch;
-
-		if ( this.blocks[serialNumber].delayedLaunchNumber !== Math.floor(percentWindowScrolling / (100 / percentDelayedLaunch)) ) {
-			this.blocks[serialNumber].delayedLaunchNumber = Math.floor(percentWindowScrolling / (100 / percentDelayedLaunch));
-			return 1;
-		} else {
-			return 0
+		if ( this.blocks[serialNumber].delayedLaunchNumber !== percentWindowScrolling / (100 / percentDelayedLaunch) ) {
+			this.blocks[serialNumber].delayedLaunchNumber = percentWindowScrolling / (100 / percentDelayedLaunch);
 		};
 	}
 
@@ -234,12 +227,17 @@ class WidthControl {
 
 		// Отложенный запуск.
 		if ( this.blocks[serialNumber].delayedLaunch && this.blocks[serialNumber].delayedLaunch[0] ) {
-			_percentWindowScrolling = this.blocks[serialNumber].scrolledPartOfPage_For_DelayedLaunch - this.blocks[serialNumber].delayedLaunch[1];
-			_percentWindowScrolling += this.checks_If_PercentageNeedsChanged(
-						serialNumber,
-						_percentWindowScrolling,
-						this.blocks[serialNumber].delayedLaunch[1]
-					);
+			_percentWindowScrolling = this.blocks[serialNumber].scrolledPartOfPage_For_DelayedLaunch;
+
+			this.checks_If_PercentageNeedsChanged(
+				serialNumber,
+				_percentWindowScrolling,
+				this.blocks[serialNumber].delayedLaunch[1]
+			);
+
+			this.blocks[serialNumber].scrolledPartOfPage = this.blocks[serialNumber].scrolledPartOfPage_For_DelayedLaunch + this.blocks[serialNumber].delayedLaunchNumber;
+
+			_percentWindowScrolling = this.blocks[serialNumber].scrolledPartOfPage;
 
 			this.setsPercentScrolledPartOfPage(serialNumber, percentWindowScrolling, [true, _percentWindowScrolling]);
 		};

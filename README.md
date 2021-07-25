@@ -10,7 +10,7 @@ Connection JS:
 ```xml
 <script src="https://aleksandr-zero.github.io/BlocksControl/BlocksControl/blocksControl.js"></script>
 ```
-Size script: `6,02 KB`
+Size script: `6,05 KB`
 
 ```xml
 <!-- Main container -->
