@@ -1,4 +1,4 @@
-# [BlocksControl](https://aleksandr-zero.github.io/BlocksControl/app/)
+# [BlocksControl](https://zer0s2m.github.io/BlocksControl/app/)
 
 A simple script to control the width, height and<br>
 otherof an element when scrolling the window.
